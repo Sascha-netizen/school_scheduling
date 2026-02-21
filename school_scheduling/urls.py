@@ -17,9 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from hello_world import views as index_views
+from timetabling.views import my_timetable
 
 urlpatterns = [
     path('', index_views.index, name='index'),
+    path('timetabling/', my_timetable, name='my_timetable'),
     path('admin/', admin.site.urls),
-
 ]
