@@ -35,3 +35,15 @@ class Room(models.Model):
     
     def __str__(self):
         return f"{self.name} ({self.stage})"
+
+
+class ClassGroup(models.Model):
+    stage = models.ForeignKey(Stage, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        unique_together = ('stage', 'name')  
+        ordering = ['stage', 'name']
+
+    def __str__(self):
+        return f"{self.name} ({self.stage})"
