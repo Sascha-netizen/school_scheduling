@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 
 class Stage(models.Model):
@@ -113,7 +114,7 @@ class Teacher(models.Model):
         ordering = ['user__last_name', 'user__first_name']
 
     def __str__(self):
-        return self.user.get_full_name() or self.user.username
+        return f"{self.user.get_full_name() or self.user.username} ({self.stage.name})"
 
 
 class Lesson(models.Model):
@@ -137,3 +138,15 @@ class Lesson(models.Model):
 
     def __str__(self):
         return f"{self.subject} | {self.class_group} | {self.timeslot} | {self.teacher}"
+    
+    def clean(self):
+        # Ensure all related entities belong to the same stage
+        stages = {
+            self.teacher.stage,
+            self.subject.stage,
+            self.room.stage,
+            self.class_group.stage,
+            self.timeslot.stage,
+        }
+        if len(stages) > 1:
+            raise ValidationError("All entities must belong to the same stage!")
