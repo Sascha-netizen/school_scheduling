@@ -1,5 +1,9 @@
 {% load static %}
 
+{% url 'account_login' as login_url %}
+{% url 'account_signup' as signup_url %}
+{% url 'account_logout' as logout_url %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +18,14 @@
         <h1>School Scheduler</h1>
         <nav>
             <a href="{% url 'home' %}">Home</a> |
-            <a href="{% url 'admin:index' %}">Admin</a>
+            <a href="{% url 'admin:index' %}">Admin</a> |
+
+            {% if user.is_authenticated %}
+                <a href="{{ logout_url }}">Logout</a>
+            {% else %}
+                <a href="{{ signup_url }}">Register</a> |
+                <a href="{{ login_url }}">Login</a>
+            {% endif %}
         </nav>
         <hr>
     </header>

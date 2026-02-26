@@ -4,5 +4,21 @@
 
 {% block content %}
 <h2>Welcome to School Scheduler</h2>
-<p>This is your home page.</p>
+
+{% if user.is_authenticated %}
+    <p>Hello, {{ user.username }}!</p>
+
+    {% if user.is_superuser %}
+        <p><a href="{% url 'admin:index' %}">Go to Admin Dashboard</a></p>
+    {% elif is_secretary %}
+        <p><a href="{% url 'create_schedule' %}">Create a Schedule</a></p>
+    {% elif is_teacher %}
+        <p><a href="{% url 'view_schedule' %}">View Your Schedule</a></p>
+    {% else %}
+        <p>Your account is active, but no specific role assigned.</p>
+    {% endif %}
+
+{% else %}
+    <p>Please <a href="{{ login_url }}">log in</a> or <a href="{{ signup_url }}">register</a> to continue.</p>
+{% endif %}
 {% endblock %}
