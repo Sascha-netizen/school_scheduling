@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Schedule{% endblock %}
+
+{% block content %}
+<h1>Admin Scheduling Page</h1>
+<p>Below is the full schedule for all stages:</p>
+
+{% if lessons %}
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Day</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Stage</th>
+            <th>Class Group</th>
+            <th>Subject</th>
+            <th>Room</th>
+            <th>Teacher</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for lesson in lessons %}
+        <tr>
+            <td>{{ lesson.timeslot.day }}</td>
+            <td>{{ lesson.timeslot.start_time|time:"H:i" }}</td>
+            <td>{{ lesson.timeslot.end_time|time:"H:i" }}</td>
+            <td>{{ lesson.class_group.stage.name }}</td>
+            <td>{{ lesson.class_group.name }}</td>
+            <td>{{ lesson.subject.name }}</td>
+            <td>{{ lesson.room.name }}</td>
+            <td>{{ lesson.teacher.user.get_full_name|default:lesson.teacher.user.username }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No lessons scheduled yet.</p>
+{% endif %}
+
+{% endblock %}
