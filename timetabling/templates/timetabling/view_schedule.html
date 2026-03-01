@@ -1,7 +1,32 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>View Schedule</h1>
-  <p>This page is coming soon. Schedule data will appear here.</p>
-  <p>For now, there is no schedule to display.</p>
+<h1>My Schedule</h1>
+
+{% if lessons %}
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Day</th>
+            <th>Time</th>
+            <th>Class Group</th>
+            <th>Subject</th>
+            <th>Room</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for lesson in lessons %}
+        <tr>
+            <td>{{ lesson.timeslot.day }}</td>
+            <td>{{ lesson.timeslot.start_time|time:"H:i" }} - {{ lesson.timeslot.end_time|time:"H:i" }}</td>
+            <td>{{ lesson.class_group.name }}</td>
+            <td>{{ lesson.subject.name }}</td>
+            <td>{{ lesson.room.name }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No lessons scheduled for you yet.</p>
+{% endif %}
 {% endblock %}

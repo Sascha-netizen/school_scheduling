@@ -101,6 +101,26 @@ class TimeSlot(models.Model):
     def __str__(self):
         return f"{self.day} {self.start_time.strftime('%H:%M')}–{self.end_time.strftime('%H:%M')} ({self.stage})"
 
+    def clean(self):
+        # Ensure start time is before end time
+        if self.start_time >= self.end_time:
+            raise ValidationError("Start time must be before end time.")
+
+        # Prevent overlapping timeslots within the same stage and day
+        overlapping = TimeSlot.objects.filter(
+            stage=self.stage,
+            day=self.day,
+            start_time__lt=self.end_time,
+            end_time__gt=self.start_time,
+        ).exclude(pk=self.pk)
+
+        if overlapping.exists():
+            raise ValidationError("This timeslot overlaps with an existing timeslot.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
 
 class Teacher(models.Model):
     """
@@ -148,5 +168,10 @@ class Lesson(models.Model):
             self.class_group.stage,
             self.timeslot.stage,
         }
+    
         if len(stages) > 1:
             raise ValidationError("All entities must belong to the same stage!")
+        
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
