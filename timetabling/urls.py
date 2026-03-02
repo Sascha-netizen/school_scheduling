@@ -6,5 +6,6 @@ urlpatterns = [
     path('create_schedule/', views.create_schedule, name='create_schedule'),
     path('view_schedule/', views.view_schedule, name='view_schedule'),
     path('admin_schedule/', views.admin_schedule, name='admin_schedule'),
+    path('lesson/<int:lesson_id>/edit/', views.edit_lesson, name='edit_lesson'),
     path('delete_lesson/<int:lesson_id>/', views.delete_lesson, name='delete_lesson'),
 ]

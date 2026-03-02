@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Lesson{% endblock %}
+
+{% block content %}
+<h1>Edit Lesson for {{ lesson.class_group.name }}</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Changes</button>
+</form>
+
+<p><a href="{% url 'create_schedule' %}">Back to Schedule</a></p>
+{% endblock %}
