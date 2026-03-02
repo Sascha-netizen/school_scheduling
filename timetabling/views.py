@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
@@ -58,6 +59,7 @@ def create_schedule(request):
 
             if form.is_valid():
                 form.save()
+                messages.success(request, "Lesson added successfully!")  # ✅
                 return redirect('create_schedule')
 
         else:
@@ -104,6 +106,7 @@ def edit_lesson(request, lesson_id):
 
         if form.is_valid():
             form.save()
+            messages.success(request, "Lesson updated successfully!")  # ✅
             return redirect('create_schedule')
 
     else:
@@ -164,5 +167,5 @@ def delete_lesson(request, lesson_id):
 
     if request.method == "POST":
         lesson.delete()
-
-    return redirect('create_schedule')
+        messages.success(request, "Lesson deleted successfully!")  # ✅
+        return redirect('create_schedule')
