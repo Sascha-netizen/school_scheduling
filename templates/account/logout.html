@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Logout | TaleemTime{% endblock %}
+
+{% block content %}
+<h1>Log Out</h1>
+<p>Are you sure you want to log out?</p>
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit">Yes, log me out</button>
+</form>
+{% endblock %}

@@ -1,0 +1,247 @@
+/* ── TaleemTime | style.css ── */
+
+/* ── Variables ── */
+:root {
+    --cobalt-dark:  #1B3A6B;
+    --cobalt-mid:   #2E5FA3;
+    --cobalt-light: #6A9FD8;
+    --cream:        #F7F2E8;
+    --cream-dark:   #EDE8DC;
+    --terracotta:   #C8793A;
+    --text-dark:    #2C2C2C;
+    --text-light:   #F7F2E8;
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background-color: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Header ── */
+header {
+    background: linear-gradient(135deg, var(--cobalt-dark) 0%, var(--cobalt-mid) 60%, var(--cobalt-light) 100%);
+    border-bottom: 4px solid var(--terracotta);
+    padding: 0 40px;
+}
+
+.header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 0;
+}
+
+.brand h1 {
+    font-size: 1.9rem;
+    font-weight: bold;
+    color: var(--text-light);
+    letter-spacing: 0.04em;
+}
+
+.brand .tagline {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--cobalt-light);
+    letter-spacing: 0.08em;
+    margin-top: 2px;
+}
+
+/* ── Nav ── */
+nav {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+nav a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 7px 16px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.25);
+    transition: background 0.2s, border-color 0.2s;
+}
+
+nav a:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.5);
+}
+
+/* ── Main ── */
+main {
+    flex: 1;
+    max-width: 1100px;
+    width: 100%;
+    margin: 36px auto;
+    padding: 0 40px;
+}
+
+/* ── Messages ── */
+.messages {
+    list-style: none;
+    margin-bottom: 24px;
+}
+
+.messages li {
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    border-left: 4px solid var(--cobalt-mid);
+    background: #ddeaf7;
+    color: var(--cobalt-dark);
+}
+
+.messages li.success {
+    border-left-color: #3a8a5c;
+    background: #dff2e8;
+    color: #1f5c38;
+}
+
+.messages li.error {
+    border-left-color: var(--terracotta);
+    background: #faeade;
+    color: #7a3a18;
+}
+
+/* ── Headings ── */
+h1, h2, h3 {
+    color: var(--cobalt-dark);
+    margin-bottom: 16px;
+}
+
+h1 { font-size: 1.8rem; }
+h2 { font-size: 1.4rem; }
+
+/* ── Tables ── */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(27,58,107,0.08);
+}
+
+thead tr {
+    background: var(--cobalt-mid);
+    color: var(--text-light);
+}
+
+th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 0.8rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+td {
+    padding: 11px 16px;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--cream-dark);
+    color: var(--text-dark);
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+tbody tr:nth-child(even) {
+    background: #eef3fb;
+}
+
+tbody tr:hover {
+    background: #dde8f5;
+}
+
+/* ── Buttons ── */
+button, .btn {
+    background: var(--cobalt-mid);
+    color: var(--text-light);
+    border: none;
+    padding: 9px 20px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:hover, .btn:hover {
+    background: var(--cobalt-dark);
+}
+
+button.danger {
+    background: var(--terracotta);
+}
+
+button.danger:hover {
+    background: #a85e28;
+}
+
+/* ── Forms ── */
+form p {
+    margin-bottom: 14px;
+}
+
+label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: var(--cobalt-dark);
+    margin-bottom: 4px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid #b0c4de;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    background: #fff;
+    color: var(--text-dark);
+    transition: border-color 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--cobalt-mid);
+    box-shadow: 0 0 0 3px rgba(46,95,163,0.12);
+}
+
+/* ── Links ── */
+a {
+    color: var(--cobalt-mid);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--cobalt-dark);
+    text-decoration: underline;
+}
+
+/* ── Footer ── */
+footer {
+    background: var(--cobalt-dark);
+    color: rgba(247,242,232,0.6);
+    text-align: center;
+    padding: 16px 40px;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+}

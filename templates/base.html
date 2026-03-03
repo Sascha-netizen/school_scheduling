@@ -9,29 +9,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}School Scheduler{% endblock %}</title>
-    <!-- You can link your CSS here -->
+    <title>{% block title %}TaleemTime{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <header>
-        <h1>School Scheduler</h1>
-        <nav>
-            <a href="{% url 'home' %}">Home</a> |
-            <a href="{% url 'admin:index' %}">Admin</a> |
 
-            {% if user.is_authenticated %}
-                <a href="{{ logout_url }}">Logout</a>
-            {% else %}
-                <a href="{{ signup_url }}">Register</a> |
-                <a href="{{ login_url }}">Login</a>
-            {% endif %}
-        </nav>
-        <hr>
+    <header>
+        <div class="header-inner">
+            <div class="brand">
+                <h1>TaleemTime</h1>
+                <span class="tagline">Timetabling for Islamic Schools</span>
+            </div>
+            <nav>
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'admin:index' %}">Admin</a>
+                {% if user.is_authenticated %}
+                    <a href="{{ logout_url }}">Logout</a>
+                {% else %}
+                    <a href="{{ signup_url }}">Register</a>
+                    <a href="{{ login_url }}">Login</a>
+                {% endif %}
+            </nav>
+        </div>
     </header>
 
     <main>
-         {% if messages %}
+        {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
                     <li class="{{ message.tags }}">{{ message }}</li>
@@ -44,8 +47,8 @@
     </main>
 
     <footer>
-        <hr>
-        <p>&copy; 2026 My School Scheduler</p>
+        <p>&copy; 2026 TaleemTime</p>
     </footer>
+
 </body>
 </html>
