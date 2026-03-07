@@ -285,3 +285,12 @@ main > .section-title:first-child {
 .action-forms {
     display: inline;
 }
+
+.messages {
+    display: none;
+}
+
+/* ── Hide inline form errors (handled by SweetAlert2) ── */
+.errorlist {
+    display: none;
+}
