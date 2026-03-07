@@ -53,6 +53,37 @@
 <hr>
 
 <!-- ============================= -->
+<!-- Export -->
+<!-- ============================= -->
+<h2>Export Schedule</h2>
+<form method="GET" action="{% url 'export_schedule_csv' %}">
+
+    <label for="teacher">Teacher:</label>
+    <select name="teacher" id="teacher">
+        <option value="">All Teachers</option>
+        {% for teacher in teachers %}
+            <option value="{{ teacher.id }}">
+                {{ teacher.user.get_full_name|default:teacher.user.username }} ({{ teacher.stage.name }})
+            </option>
+        {% endfor %}
+    </select>
+
+    <label for="class_group">Class Group:</label>
+    <select name="class_group" id="class_group">
+        <option value="">All Class Groups</option>
+        {% for cg in class_groups %}
+            <option value="{{ cg.id }}">
+                {{ cg.name }} ({{ cg.stage.name }})
+            </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">⬇ Export CSV</button>
+</form>
+
+<hr>
+
+<!-- ============================= -->
 <!-- Existing Lessons Table -->
 <!-- ============================= -->
 <h2>Existing Lessons</h2>

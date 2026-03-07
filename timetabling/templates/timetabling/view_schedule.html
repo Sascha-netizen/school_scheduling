@@ -29,4 +29,7 @@
 {% else %}
 <p>No lessons scheduled for you yet.</p>
 {% endif %}
+
+<hr>
+<a href="{% url 'export_teacher_schedule_csv' %}">⬇ Export My Schedule (CSV)</a>
 {% endblock %}

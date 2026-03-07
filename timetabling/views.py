@@ -81,6 +81,8 @@ def create_schedule(request):
         'lessons': lessons,
         'stages': Stage.objects.all(),
         'selected_stage': selected_stage,
+        'teachers': Teacher.objects.select_related('user', 'stage').order_by('user__last_name'),
+        'class_groups': ClassGroup.objects.select_related('stage').order_by('stage', 'name'),
     })
 
 
