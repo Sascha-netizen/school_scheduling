@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<h1>Create a Lesson</h1>
+<h1 class="section-title">Create a Lesson</h1>
 <p>Use the form below to add a lesson to the schedule.</p>
 
 <!-- ============================= -->
@@ -34,9 +34,9 @@
 <!-- Lesson Creation Form -->
 <!-- ============================= -->
 {% if selected_stage %}
-    <hr>
+    
 
-    <h2>Add Lesson for {{ selected_stage.name }}</h2>
+    <h2 class="section-title">Add Lesson for {{ selected_stage.name }}</h2>
 
     <form method="POST">
         {% csrf_token %}
@@ -44,49 +44,46 @@
         
         {{ form.as_p }}
 
-        <button type="submit" name="save_lesson">
-            Add Lesson
-        </button>
+        <button type="submit" name="save_lesson">Add Lesson</button>
     </form>
 {% endif %}
 
-<hr>
 
 <!-- ============================= -->
 <!-- Export -->
 <!-- ============================= -->
-<h2>Export Schedule</h2>
-<form method="GET" action="{% url 'export_schedule_csv' %}" class="export-form">
-
-    <label for="teacher">Teacher:</label>
-    <select name="teacher" id="teacher">
-        <option value="">All Teachers</option>
-        {% for teacher in teachers %}
-            <option value="{{ teacher.id }}">
-                {{ teacher.user.get_full_name|default:teacher.user.username }} ({{ teacher.stage.name }})
-            </option>
-        {% endfor %}
-    </select>
-
-    <label for="class_group">Class Group:</label>
-    <select name="class_group" id="class_group">
-        <option value="">All Class Groups</option>
-        {% for cg in class_groups %}
-            <option value="{{ cg.id }}">
-                {{ cg.name }} ({{ cg.stage.name }})
-            </option>
-        {% endfor %}
-    </select>
-
-    <button type="submit">⬇ Export CSV</button>
+<h2 class="section-title">Export Schedule</h2>
+<form method="GET" action="{% url 'export_schedule_csv' %}">
+    <div class="export-row">
+        <label>Teacher:
+            <select name="teacher">
+                <option value="">All Teachers</option>
+                {% for teacher in teachers %}
+                    <option value="{{ teacher.id }}">
+                        {{ teacher.user.get_full_name|default:teacher.user.username }} ({{ teacher.stage.name }})
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Class Group:
+            <select name="class_group">
+                <option value="">All Class Groups</option>
+                {% for cg in class_groups %}
+                    <option value="{{ cg.id }}">
+                        {{ cg.name }} ({{ cg.stage.name }})
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+        <button type="submit">⬇ Export CSV</button>
+    </div>
 </form>
 
-<hr>
 
 <!-- ============================= -->
 <!-- Existing Lessons Table -->
 <!-- ============================= -->
-<h2>Existing Lessons</h2>
+<h2 class="section-title">Existing Lessons</h2>
 
 {% if lessons %}
 <table>
@@ -113,27 +110,17 @@
             <td>{{ lesson.class_group.name }}</td>
             <td>{{ lesson.subject.name }}</td>
             <td>{{ lesson.room.name }}</td>
+            <td>{{ lesson.teacher.user.get_full_name|default:lesson.teacher.user.username }}</td>
             <td>
-                {{ lesson.teacher.user.get_full_name|default:lesson.teacher.user.username }}
+                <form action="{% url 'edit_lesson' lesson.id %}" method="get" class="action-forms">
+                    <button type="submit">Edit</button>
+                </form>
+                |
+                <form method="POST" action="{% url 'delete_lesson' lesson.id %}" class="action-forms delete-form">
+                    {% csrf_token %}
+                    <button type="submit" class="danger">Delete</button>
+                </form>
             </td>
-
-            <td>
-    <!-- Edit -->
-    <form action="{% url 'edit_lesson' lesson.id %}" method="get" style="display:inline;">
-        <button type="submit">Edit</button>
-    </form>
-
-    |
-
-    <!-- Delete -->
-  <form method="POST"
-      action="{% url 'delete_lesson' lesson.id %}"
-      class="delete-form"
-      style="display:inline;">
-        {% csrf_token %}
-    <button type="submit" class="danger">Delete</button>
-</form>
-</td>
         </tr>
         {% endfor %}
     </tbody>

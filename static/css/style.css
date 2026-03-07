@@ -125,7 +125,7 @@ h1, h2, h3 {
 }
 
 h1 { font-size: 1.8rem; }
-h2 { font-size: 1.4rem; }
+h2 { font-size: 1.4rem; margin-top: 48px; }
 
 /* ── Tables ── */
 table {
@@ -244,4 +244,44 @@ footer {
     padding: 16px 40px;
     font-size: 0.8rem;
     letter-spacing: 0.05em;
+}
+
+/* ── HR ── */
+hr {
+    margin: 40px 0;
+    border: none;
+    border-top: 1px solid var(--cream-dark);
+}
+
+/* ── Section Titles ── */
+.section-title {
+    margin-top: 30px;
+    margin-bottom: 16px;
+}
+
+main > .section-title:first-child {
+    margin-top: 0;
+}
+
+/* ── Export Form ── */
+.export-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+}
+
+.export-row label {
+    display: inline;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.export-row select {
+    width: auto;
+    min-width: 180px;
+}
+
+.action-forms {
+    display: inline;
 }
