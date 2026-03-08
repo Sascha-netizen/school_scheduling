@@ -6,10 +6,8 @@ from timetabling.models import Lesson, TimeSlot, Stage, ClassGroup, Subject, Roo
 from .forms import LessonForm
 
 
-# -------------------------
-# Home page
-# -------------------------
 def home(request):
+    """Render the home page, passing role flags for the current user."""
     user = request.user
     is_secretary = False
     is_teacher = False
@@ -24,17 +22,17 @@ def home(request):
     })
 
 
-# -------------------------
-# Secretaries: create schedule
-# -------------------------
 @login_required
 def create_schedule(request):
+    """Allow secretaries to create lessons. Restricted to the Secretaries group."""
     if not request.user.groups.filter(name='Secretaries').exists():
         return redirect('home')
 
     selected_stage = None
     form = None
-
+    # Two POST actions share this view: 'select_stage' filters the form fields
+    # by the chosen stage without saving, while 'save_lesson' validates and saves
+    # the lesson. The stage is re-passed as a hidden input to reconstruct querysets.
     if request.method == "POST":
         stage_id = request.POST.get('stage')
 
@@ -86,11 +84,9 @@ def create_schedule(request):
     })
 
 
-# -------------------------
-# Secretaries: edit lesson (NEW)
-# -------------------------
 @login_required
 def edit_lesson(request, lesson_id):
+    """Allow secretaries to edit an existing lesson. Restricted to the Secretaries group."""
     if not request.user.groups.filter(name='Secretaries').exists():
         return redirect('home')
 
@@ -126,11 +122,9 @@ def edit_lesson(request, lesson_id):
     })
 
 
-# -------------------------
-# Teachers: view schedule
-# -------------------------
 @login_required
 def view_schedule(request):
+    """Display the logged-in teacher's own lessons. Restricted to the Teachers group."""
     if not request.user.groups.filter(name='Teachers').exists():
         return redirect('home')
 
@@ -143,11 +137,9 @@ def view_schedule(request):
     })
 
 
-# -------------------------
-# Admin: full schedule
-# -------------------------
 @staff_member_required
 def admin_schedule(request):
+    """Display the full schedule. Restricted to staff members."""
     lessons = Lesson.objects.select_related(
         'teacher', 'subject', 'room', 'class_group', 'timeslot'
     ).order_by('timeslot__day', 'timeslot__start_time')
@@ -157,11 +149,9 @@ def admin_schedule(request):
     })
 
 
-# -------------------------
-# Secretaries: delete lesson
-# -------------------------
 @login_required
 def delete_lesson(request, lesson_id):
+    """Allow secretaries to delete a lesson. Restricted to the Secretaries group."""
     if not request.user.groups.filter(name='Secretaries').exists():
         return redirect('home')
 
