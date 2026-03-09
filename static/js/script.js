@@ -1,3 +1,5 @@
+/* global Swal */
+
 document.querySelectorAll('.delete-form').forEach(form => {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
