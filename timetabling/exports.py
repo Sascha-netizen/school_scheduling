@@ -8,6 +8,7 @@ from timetabling.models import Lesson
 
 @login_required
 def export_schedule_csv(request):
+    """Export the full schedule as a CSV. Restricted to Secretaries."""
     if not request.user.groups.filter(name='Secretaries').exists():
         return redirect('home')
 
@@ -25,13 +26,21 @@ def export_schedule_csv(request):
         lessons = lessons.filter(class_group__id=class_group_id)
 
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="full_schedule.csv"'
+    response['Content-Disposition'] = (
+        'attachment; filename="full_schedule.csv"'
+    )
 
     writer = csv.writer(response)
-    writer.writerow(['Stage', 'Day', 'Start Time', 'End Time', 'Class Group', 'Subject', 'Room', 'Teacher'])
+    writer.writerow([
+        'Stage', 'Day', 'Start Time', 'End Time',
+        'Class Group', 'Subject', 'Room', 'Teacher'
+    ])
 
     if not lessons.exists():
-        writer.writerow(['No lessons match the selected filters.', '', '', '', '', '', '', ''])
+        writer.writerow([
+            'No lessons match the selected filters.',
+            '', '', '', '', '', '', ''
+        ])
         return response
 
     for lesson in lessons:
@@ -43,13 +52,17 @@ def export_schedule_csv(request):
             lesson.class_group.name,
             lesson.subject.name,
             lesson.room.name,
-            lesson.teacher.user.get_full_name() or lesson.teacher.user.username,
+            lesson.teacher.user.get_full_name() or (
+                lesson.teacher.user.username
+            ),
         ])
 
     return response
 
+
 @login_required
 def export_teacher_schedule_csv(request):
+    """Export a teacher's own schedule as a CSV. Restricted to Teachers."""
     if not request.user.groups.filter(name='Teachers').exists():
         return redirect('home')
 
@@ -62,10 +75,15 @@ def export_teacher_schedule_csv(request):
 
     filename = f"{slugify(request.user.username)}_schedule.csv"
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    response['Content-Disposition'] = (
+        f'attachment; filename="{filename}"'
+    )
 
     writer = csv.writer(response)
-    writer.writerow(['Stage', 'Day', 'Start Time', 'End Time', 'Class Group', 'Subject', 'Room'])
+    writer.writerow([
+        'Stage', 'Day', 'Start Time', 'End Time',
+        'Class Group', 'Subject', 'Room'
+    ])
 
     if not lessons.exists():
         writer.writerow(['No lessons scheduled.', '', '', '', '', '', ''])

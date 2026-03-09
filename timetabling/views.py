@@ -2,7 +2,9 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
-from timetabling.models import Lesson, TimeSlot, Stage, ClassGroup, Subject, Room, Teacher
+from timetabling.models import (
+    Lesson, TimeSlot, Stage, ClassGroup, Subject, Room, Teacher
+)
 from .forms import LessonForm
 
 
@@ -24,51 +26,80 @@ def home(request):
 
 @login_required
 def create_schedule(request):
-    """Allow secretaries to create lessons. Restricted to the Secretaries group."""
+    """Allow secretaries to create lessons. Restricted to Secretaries."""
     if not request.user.groups.filter(name='Secretaries').exists():
         return redirect('home')
 
     selected_stage = None
     form = None
-    # Two POST actions share this view: 'select_stage' filters the form fields
-    # by the chosen stage without saving, while 'save_lesson' validates and saves
-    # the lesson. The stage is re-passed as a hidden input to reconstruct querysets.
+    # Two POST actions share this view: 'select_stage' filters the form
+    # fields by the chosen stage without saving, while 'save_lesson'
+    # validates and saves the lesson. The stage is re-passed as a hidden
+    # input to reconstruct querysets.
     if request.method == "POST":
         stage_id = request.POST.get('stage')
 
         if stage_id and 'select_stage' in request.POST:
             selected_stage = Stage.objects.get(pk=stage_id)
             form = LessonForm()
-            form.fields['class_group'].queryset = ClassGroup.objects.filter(stage_id=stage_id)
-            form.fields['subject'].queryset = Subject.objects.filter(stage_id=stage_id)
-            form.fields['room'].queryset = Room.objects.filter(stage_id=stage_id)
-            form.fields['teacher'].queryset = Teacher.objects.filter(stage_id=stage_id)
-            form.fields['timeslot'].queryset = TimeSlot.objects.filter(stage_id=stage_id)
+            form.fields['class_group'].queryset = (
+                ClassGroup.objects.filter(stage_id=stage_id)
+            )
+            form.fields['subject'].queryset = (
+                Subject.objects.filter(stage_id=stage_id)
+            )
+            form.fields['room'].queryset = (
+                Room.objects.filter(stage_id=stage_id)
+            )
+            form.fields['teacher'].queryset = (
+                Teacher.objects.filter(stage_id=stage_id)
+            )
+            form.fields['timeslot'].queryset = (
+                TimeSlot.objects.filter(stage_id=stage_id)
+            )
 
         elif stage_id and 'save_lesson' in request.POST:
             selected_stage = Stage.objects.get(pk=stage_id)
             form = LessonForm(request.POST)
 
-            form.fields['class_group'].queryset = ClassGroup.objects.filter(stage_id=stage_id)
-            form.fields['subject'].queryset = Subject.objects.filter(stage_id=stage_id)
-            form.fields['room'].queryset = Room.objects.filter(stage_id=stage_id)
-            form.fields['teacher'].queryset = Teacher.objects.filter(stage_id=stage_id)
-            form.fields['timeslot'].queryset = TimeSlot.objects.filter(stage_id=stage_id)
+            form.fields['class_group'].queryset = (
+                ClassGroup.objects.filter(stage_id=stage_id)
+            )
+            form.fields['subject'].queryset = (
+                Subject.objects.filter(stage_id=stage_id)
+            )
+            form.fields['room'].queryset = (
+                Room.objects.filter(stage_id=stage_id)
+            )
+            form.fields['teacher'].queryset = (
+                Teacher.objects.filter(stage_id=stage_id)
+            )
+            form.fields['timeslot'].queryset = (
+                TimeSlot.objects.filter(stage_id=stage_id)
+            )
 
             if form.is_valid():
                 form.save()
-                messages.success(request, "Lesson added successfully!")  # ✅
+                messages.success(request, "Lesson added successfully!")
                 return redirect('create_schedule')
 
         else:
             form = LessonForm()
-            for field in ['class_group', 'subject', 'room', 'teacher', 'timeslot']:
-                form.fields[field].queryset = form.fields[field].queryset.none()
+            for field in [
+                'class_group', 'subject', 'room', 'teacher', 'timeslot'
+            ]:
+                form.fields[field].queryset = (
+                    form.fields[field].queryset.none()
+                )
 
     else:
         form = LessonForm()
-        for field in ['class_group', 'subject', 'room', 'teacher', 'timeslot']:
-            form.fields[field].queryset = form.fields[field].queryset.none()
+        for field in [
+            'class_group', 'subject', 'room', 'teacher', 'timeslot'
+        ]:
+            form.fields[field].queryset = (
+                form.fields[field].queryset.none()
+            )
 
     lessons = Lesson.objects.select_related(
         'teacher', 'subject', 'room', 'class_group', 'timeslot'
@@ -79,14 +110,18 @@ def create_schedule(request):
         'lessons': lessons,
         'stages': Stage.objects.all(),
         'selected_stage': selected_stage,
-        'teachers': Teacher.objects.select_related('user', 'stage').order_by('user__last_name'),
-        'class_groups': ClassGroup.objects.select_related('stage').order_by('stage', 'name'),
+        'teachers': Teacher.objects.select_related(
+            'user', 'stage'
+        ).order_by('user__last_name'),
+        'class_groups': ClassGroup.objects.select_related(
+            'stage'
+        ).order_by('stage', 'name'),
     })
 
 
 @login_required
 def edit_lesson(request, lesson_id):
-    """Allow secretaries to edit an existing lesson. Restricted to the Secretaries group."""
+    """Allow secretaries to edit a lesson. Restricted to Secretaries."""
     if not request.user.groups.filter(name='Secretaries').exists():
         return redirect('home')
 
@@ -96,25 +131,45 @@ def edit_lesson(request, lesson_id):
     if request.method == "POST":
         form = LessonForm(request.POST, instance=lesson)
 
-        form.fields['class_group'].queryset = ClassGroup.objects.filter(stage_id=stage_id)
-        form.fields['subject'].queryset = Subject.objects.filter(stage_id=stage_id)
-        form.fields['room'].queryset = Room.objects.filter(stage_id=stage_id)
-        form.fields['teacher'].queryset = Teacher.objects.filter(stage_id=stage_id)
-        form.fields['timeslot'].queryset = TimeSlot.objects.filter(stage_id=stage_id)
+        form.fields['class_group'].queryset = (
+            ClassGroup.objects.filter(stage_id=stage_id)
+        )
+        form.fields['subject'].queryset = (
+            Subject.objects.filter(stage_id=stage_id)
+        )
+        form.fields['room'].queryset = (
+            Room.objects.filter(stage_id=stage_id)
+        )
+        form.fields['teacher'].queryset = (
+            Teacher.objects.filter(stage_id=stage_id)
+        )
+        form.fields['timeslot'].queryset = (
+            TimeSlot.objects.filter(stage_id=stage_id)
+        )
 
         if form.is_valid():
             form.save()
-            messages.success(request, "Lesson updated successfully!")  # ✅
+            messages.success(request, "Lesson updated successfully!")
             return redirect('create_schedule')
 
     else:
         form = LessonForm(instance=lesson)
 
-        form.fields['class_group'].queryset = ClassGroup.objects.filter(stage_id=stage_id)
-        form.fields['subject'].queryset = Subject.objects.filter(stage_id=stage_id)
-        form.fields['room'].queryset = Room.objects.filter(stage_id=stage_id)
-        form.fields['teacher'].queryset = Teacher.objects.filter(stage_id=stage_id)
-        form.fields['timeslot'].queryset = TimeSlot.objects.filter(stage_id=stage_id)
+        form.fields['class_group'].queryset = (
+            ClassGroup.objects.filter(stage_id=stage_id)
+        )
+        form.fields['subject'].queryset = (
+            Subject.objects.filter(stage_id=stage_id)
+        )
+        form.fields['room'].queryset = (
+            Room.objects.filter(stage_id=stage_id)
+        )
+        form.fields['teacher'].queryset = (
+            Teacher.objects.filter(stage_id=stage_id)
+        )
+        form.fields['timeslot'].queryset = (
+            TimeSlot.objects.filter(stage_id=stage_id)
+        )
 
     return render(request, "timetabling/edit_lesson.html", {
         'form': form,
@@ -124,7 +179,7 @@ def edit_lesson(request, lesson_id):
 
 @login_required
 def view_schedule(request):
-    """Display the logged-in teacher's own lessons. Restricted to the Teachers group."""
+    """Display the logged-in teacher's lessons. Restricted to Teachers."""
     if not request.user.groups.filter(name='Teachers').exists():
         return redirect('home')
 
@@ -151,7 +206,7 @@ def admin_schedule(request):
 
 @login_required
 def delete_lesson(request, lesson_id):
-    """Allow secretaries to delete a lesson. Restricted to the Secretaries group."""
+    """Allow secretaries to delete a lesson. Restricted to Secretaries."""
     if not request.user.groups.filter(name='Secretaries').exists():
         return redirect('home')
 
@@ -159,5 +214,5 @@ def delete_lesson(request, lesson_id):
 
     if request.method == "POST":
         lesson.delete()
-        messages.success(request, "Lesson deleted successfully!")  # ✅
+        messages.success(request, "Lesson deleted successfully!")
         return redirect('create_schedule')

@@ -28,7 +28,10 @@ class Subject(models.Model):
     class Meta:
         ordering = ['name']
         constraints = [
-            models.UniqueConstraint(fields=['stage', 'name'], name='unique_subject_per_stage')
+            models.UniqueConstraint(
+                fields=['stage', 'name'],
+                name='unique_subject_per_stage'
+            )
         ]
 
     def __str__(self):
@@ -46,7 +49,10 @@ class Room(models.Model):
     class Meta:
         ordering = ['name']
         constraints = [
-            models.UniqueConstraint(fields=['stage', 'name'], name='unique_room_per_stage')
+            models.UniqueConstraint(
+                fields=['stage', 'name'],
+                name='unique_room_per_stage'
+            )
         ]
 
     def __str__(self):
@@ -64,7 +70,10 @@ class ClassGroup(models.Model):
     class Meta:
         ordering = ['stage', 'name']
         constraints = [
-            models.UniqueConstraint(fields=['stage', 'name'], name='unique_classgroup_per_stage')
+            models.UniqueConstraint(
+                fields=['stage', 'name'],
+                name='unique_classgroup_per_stage'
+            )
         ]
 
     def __str__(self):
@@ -99,14 +108,18 @@ class TimeSlot(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.day} {self.start_time.strftime('%H:%M')}–{self.end_time.strftime('%H:%M')} ({self.stage})"
+        return (
+            f"{self.day} "
+            f"{self.start_time.strftime('%H:%M')}–"
+            f"{self.end_time.strftime('%H:%M')} "
+            f"({self.stage})"
+        )
 
     def clean(self):
-        # Ensure start time is before end time
+        """Validate that start time is before end time and no overlaps."""
         if self.start_time >= self.end_time:
             raise ValidationError("Start time must be before end time.")
 
-        # Prevent overlapping timeslots within the same stage and day
         overlapping = TimeSlot.objects.filter(
             stage=self.stage,
             day=self.day,
@@ -115,9 +128,12 @@ class TimeSlot(models.Model):
         ).exclude(pk=self.pk)
 
         if overlapping.exists():
-            raise ValidationError("This timeslot overlaps with an existing timeslot.")
+            raise ValidationError(
+                "This timeslot overlaps with an existing timeslot."
+            )
 
     def save(self, *args, **kwargs):
+        """Run full validation before saving."""
         self.full_clean()
         super().save(*args, **kwargs)
 
@@ -134,13 +150,17 @@ class Teacher(models.Model):
         ordering = ['user__last_name', 'user__first_name']
 
     def __str__(self):
-        return f"{self.user.get_full_name() or self.user.username} ({self.stage.name})"
+        return (
+            f"{self.user.get_full_name() or self.user.username} "
+            f"({self.stage.name})"
+        )
 
 
 class Lesson(models.Model):
     """
-    The central scheduling record linking a teacher, subject, room, class group,
-    and timeslot. Unique constraints prevent double-booking of any resource.
+    The central scheduling record linking a teacher, subject, room,
+    class group, and timeslot. Unique constraints prevent double-booking
+    of any resource.
     """
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
@@ -151,16 +171,28 @@ class Lesson(models.Model):
     class Meta:
         ordering = ['timeslot', 'class_group']
         constraints = [
-            models.UniqueConstraint(fields=['teacher', 'timeslot'], name='unique_teacher_timeslot'),
-            models.UniqueConstraint(fields=['room', 'timeslot'], name='unique_room_timeslot'),
-            models.UniqueConstraint(fields=['class_group', 'timeslot'], name='unique_classgroup_timeslot'),
+            models.UniqueConstraint(
+                fields=['teacher', 'timeslot'],
+                name='unique_teacher_timeslot'
+            ),
+            models.UniqueConstraint(
+                fields=['room', 'timeslot'],
+                name='unique_room_timeslot'
+            ),
+            models.UniqueConstraint(
+                fields=['class_group', 'timeslot'],
+                name='unique_classgroup_timeslot'
+            ),
         ]
 
     def __str__(self):
-        return f"{self.subject} | {self.class_group} | {self.timeslot} | {self.teacher}"
-    
+        return (
+            f"{self.subject} | {self.class_group} | "
+            f"{self.timeslot} | {self.teacher}"
+        )
+
     def clean(self):
-        # Ensure all related entities belong to the same stage
+        """Ensure all related entities belong to the same stage."""
         stages = {
             self.teacher.stage,
             self.subject.stage,
@@ -168,10 +200,14 @@ class Lesson(models.Model):
             self.class_group.stage,
             self.timeslot.stage,
         }
-    
+
         if len(stages) > 1:
-            raise ValidationError("All entities must belong to the same stage!")
-        
+            raise ValidationError(
+                "All entities must belong to the same stage!"
+            )
+
     def save(self, *args, **kwargs):
+        """Run full validation before saving."""
         self.full_clean()
         super().save(*args, **kwargs)
+        
